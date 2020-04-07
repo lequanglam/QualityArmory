@@ -202,11 +202,19 @@ public class GunUtil {
 							negateHeadshot = BulletProtectionUtil.negatesHeadshot(p);
 						}
 					}
-
-					double damageMAX = damage * (bulletProtection ? 0.1 : 1)
-							* ((headshot && !negateHeadshot) ? (QAMain.HeadshotOneHit ? 50 * g.getHeadshotMultiplier() : g.getHeadshotMultiplier())
-							: 1);
-
+					
+					double distance = p.getLocation().distance(hitTarget.getLocation());
+					//double damageMAX = (damage * (bulletProtection ? 0.1 : 1)
+					//		* ((headshot && !negateHeadshot) ? (QAMain.HeadshotOneHit ? 50 * g.getHeadshotMultiplier() : g.getHeadshotMultiplier())
+					//		: 1));
+					double damageMAX = damage * 
+						(bulletProtection ? 0.5 : 1) * 
+						((headshot && !negateHeadshot) ? (QAMain.HeadshotOneHit ? 50 * g.getHeadshotMultiplier() : g.getHeadshotMultiplier()) : 1) *
+						(1 - (distance * 0.01875));
+						
+					if (damageMAX < 0.0) {
+						damageMAX = 0.01;
+					}
 
 					QAWeaponDamageEntityEvent shootevent = new QAWeaponDamageEntityEvent(p, g, hitTarget, headshot,
 							damage, bulletProtection);
